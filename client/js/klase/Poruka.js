@@ -2,20 +2,24 @@ Poruka = {};
 
 Poruka.prikaziPoruke = function() {
     divCaskanja.innerHTML = "";
-    if (selektSvihKorisnika.selectedIndex == 0) { //Svi
+    if (trenutnirazgovor) {
+        var trenutnirazgovarac = Korisnik.nadjiKorisnikaPoImenu(trenutnirazgovor);
+        if (trenutnirazgovarac == null) {
+            Poruka.dodajPoruku("Obavestenje: Osoba koju pokusavate da kontaktirate trenutno nije aktivna. ")
+            return;
+        }
+        for (var i in trenutnirazgovarac.poruke) {
+            Poruka.dodajPoruku(trenutnirazgovarac.poruke[i]);
+        }
+        divIzabranog.innerText = trenutnirazgovor;
+    } else if (trenutnagrupa) {
+
+    } else //svi
+    {
         for (var i in javneporuke) {
-            Poruka.dodajPoruku(javneporuke[i]); //Ovo za sad ide po dobrom redu
+            Poruka.dodajPoruku(javneporuke[i]);
         }
-        divIzabranog.innerText = "#SVI KORISNICI";
-        //console.log("Prikazujem poruke za sve korisnike. ");
-    } else if (selektSvihKorisnika.selectedIndex != -1) { //Jedan primalac
-        var id = selektSvihKorisnika.value;
-        if (Korisnik.lista[id]) {
-            for (var i in Korisnik.lista[id].poruke) {
-                Poruka.dodajPoruku(Korisnik.lista[id].poruke[i]);
-            }
-            divIzabranog.innerText = Korisnik.lista[id].korisnicko_ime;
-        }
+        divIzabranog.innerText = "#SVI";
     }
     //u suprotnom su grupe
 }
