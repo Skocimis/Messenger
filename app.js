@@ -42,10 +42,10 @@ Korisnik.priPovezivanju = function(socket, korisnicko_ime) {
         korisnicko_ime: korisnicko_ime
     });
     socket.emit("inicijalizacija", { selfId: socket.id, korisnici: Korisnik.inicijalizujPovezane() });
-    socket.on("posaljiDmKorisniku", function(podaci) {
+    socket.on("posaljiDmKorisniku", function(podaci) { //Ovde ne bi trebalo da moze da se cituje zato sto se salje korisnicko ime primaoca i tekst poruke, korisnicko ime posiljaoca zavisi od socketa
         var primalac = null;
         for (var i in Korisnik.lista) {
-            if (Korisnik.lista[i].korisnicko_ime == podaci.korisnicko_ime) { //Mozda sam mogao i id
+            if (Korisnik.lista[i].korisnicko_ime == podaci.korisnicko_ime) {
                 primalac = Korisnik.lista[i].socket;
             }
         }
@@ -56,6 +56,9 @@ Korisnik.priPovezivanju = function(socket, korisnicko_ime) {
             primalac.emit("dodajUPrivatni", { korisnicko_ime: korisnik.korisnicko_ime, poruka: korisnik.korisnicko_ime + ": " + podaci.poruka });
             socket.emit("dodajUPrivatni", { korisnicko_ime: podaci.korisnicko_ime, poruka: korisnik.korisnicko_ime + ": " + podaci.poruka });
         }
+    });
+    socket.on("posaljiPorukuSvima", function(podaci) {
+        broadcastuj("novaPoruka", { poruka: (korisnik.korisnicko_ime + ": " + podaci.poruka) });
     });
 
     //SOCKET.ON(sendmsgtoserver, sendpmtoserver)
