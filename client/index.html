@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        html {
+            height: 100%;
+        }
+        
+        body {
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+        
+        textarea {
+            resize: none;
+        }
+        
+        textarea,
+        button {
+            display: inline-block;
+            vertical-align: top;
+        }
+        
+        #container {
+            position: relative;
+            display: none;
+            width: 100%;
+            height: 100%;
+        }
+        
+        #svi {
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            width: 20%;
+            height: 100%;
+            background-color: pink;
+        }
+        
+        #caskanje {
+            width: 60%;
+            margin-left: 20%;
+            margin-right: 20%;
+            overflow-y: auto;
+            height: 80%;
+            background-color: red;
+        }
+        
+        #izabran {
+            top: 0px;
+            width: 60%;
+            margin-left: 20%;
+            margin-right: 20%;
+            height: 10%;
+            background-color: teal;
+        }
+        
+        #posaljiporukudiv {
+            width: 60%;
+            margin-left: 20%;
+            margin-right: 20%;
+            height: 10%;
+            bottom: 0px;
+            background-color: yellow;
+        }
+        
+        #grupe {
+            position: fixed;
+            bottom: 0px;
+            left: 0px;
+            height: 50%;
+            width: 20%;
+            background-color: green;
+        }
+        
+        #podesavanja {
+            position: fixed;
+            top: 0px;
+            right: 0px;
+            background-color: grey;
+            width: 20%;
+            height: 30%;
+        }
+        
+        #clanovi {
+            position: fixed;
+            bottom: 0px;
+            right: 0px;
+            background-color: blue;
+            width: 20%;
+            height: 70%;
+        }
+        
+        #selektkorisnika {
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="prijavljivanje">
+        <form id="logregforma">
+            <input type="text" id="korisnicko_ime"><br>
+            <input type="password" id="lozinka"><br>
+            <button id="prijava" type="submit">Prijava</button>
+            <button id="registracija">Registracija</button>
+        </form>
+    </div>
+    <div id="container">
+        <div id="svi">
+            <select id="selektkorisnika"></select>
+        </div>
+        <div id="grupe"></div>
+        <div id="izabran"></div>
+        <div id="caskanje"></div>
+        <div id="posaljiporukudiv">
+            <form id="formaSlanjaPoruke" style="width: 100%; margin: 0px; height: 100%;">
+                <textarea id="poslataPoruka" cols="40" rows="5" style="width: 89%;margin: 0px; max-height: 100%;"></textarea>
+                <button type="submit" style="right: 0px; width: 10%;margin: 0px; height: 100%;">Posalji</button>
+            </form>
+        </div>
+        <div id="clanovi"></div>
+        <div id="podesavanja"></div>
+
+    </div>
+    <script src="/client/js/lib/socket.io.js"></script>
+    <script>
+        //I NEKI HEADER KOJI KAZE SA KIME KORISNIK CASKA
+        var socket = io();
+        var formaPrijava = document.getElementById("logregforma");
+        var container = document.getElementById("container");
+        var btnReg = document.getElementById("registracija");
+        var divCaskanja = document.getElementById("caskanje");
+        var divSvihKorisnika = document.getElementById("svi");
+        var divIzabranog = document.getElementById("izabran");
+        var formaSlanjaPoruke = document.getElementById("formaSlanjaPoruke");
+        var selektSvihKorisnika = document.getElementById("selektkorisnika");
+        var taPoruke = document.getElementById("poslataPoruka");
+
+        taPoruke.onkeydown = function(e) {
+            if (e.keyCode == 13) {
+                //DUPLI KOD ZA SADA
+                //Samo ako je selektovan neki korisnik
+                if (taPoruke.value != "") {
+                    socket.emit("posaljiDmKorisniku", {
+                        korisnicko_ime: Korisnik.lista[selektSvihKorisnika.value].korisnicko_ime,
+                        poruka: taPoruke.value
+                    });
+                }
+                taPoruke.value = "";
+            }
+        }
+        taPoruke.onkeyup = function(e) {
+            if (e.keyCode == 13) {
+                taPoruke.value = "";
+            }
+        }
+
+        formaSlanjaPoruke.onsubmit = function(e) {
+            e.preventDefault();
+            //Samo ako je selektovan neki korisnik
+            if (taPoruke.value != "") {
+                socket.emit("posaljiDmKorisniku", {
+                    korisnicko_ime: Korisnik.lista[selektSvihKorisnika.value].korisnicko_ime,
+                    poruka: taPoruke.value
+                });
+            }
+            taPoruke.value = "";
+        }
+        selektSvihKorisnika.onchange = function() {
+            if (selektSvihKorisnika.selectedIndex != -1) {
+                prikaziPoruke();
+                divCaskanja.scrollTop = divCaskanja.scrollHeight;
+            }
+        }
+        var selfId = -1;
+
+        var Korisnik = function(paket) {
+            var self = {};
+            self.id = paket.id;
+            self.korisnicko_ime = paket.korisnicko_ime;
+            self.poruke = paket.poruke || [];
+
+            self.prikazi = function() { //Za sada se ne koristi
+                //Dodavanje onoga sto treba u div sa svim korisnicima, sa onclickom
+            }
+            Korisnik.lista[self.id] = self;
+            return self;
+        }
+        Korisnik.lista = {};
+        var prikaziKorisnike = function() { //TREBA I ONCLICK
+            selektSvihKorisnika.innerHTML = "";
+            var htsvi = document.createElement("option");
+            htsvi.value = -1;
+            htsvi.innerHTML = "#SVI";
+            selektSvihKorisnika.size = Object.keys(Korisnik.lista).length + 1;
+            for (var i in Korisnik.lista) {
+                var opcija = document.createElement("option");
+                opcija.value = i;
+                if (i == selfId) {
+                    opcija.innerText = "Ja (" + Korisnik.lista[i].korisnicko_ime + ")";
+                    selektSvihKorisnika.insertBefore(opcija, selektSvihKorisnika.childNodes[0]);
+                } else {
+                    opcija.innerText = Korisnik.lista[i].korisnicko_ime;
+                    selektSvihKorisnika.appendChild(opcija);
+                }
+            }
+            selektSvihKorisnika.insertBefore(htsvi, selektSvihKorisnika.childNodes[0]); //#svi
+            divSvihKorisnika.appendChild(selektSvihKorisnika);
+        }
+        var prikaziPoruke = function() {
+            divCaskanja.innerHTML = "";
+            var id = selektSvihKorisnika.value; //SAMO TRENUTNO
+            if (id == -1) {
+                //Zajednicke poruke svih
+            }
+            if (Korisnik.lista[id]) {
+                for (var i in Korisnik.lista[id].poruke) {
+                    dodajPoruku(Korisnik.lista[id].poruke[i]);
+                }
+                divIzabranog.innerText = Korisnik.lista[id].korisnicko_ime;
+            }
+            //u suprotnom su grupe
+        }
+        var dodajPoruku = function(tekst) { //Posiljalac je trenutno deo teksta poruke
+            var poruka = document.createElement("div");
+            poruka.innerText = tekst;
+            divCaskanja.appendChild(poruka);
+        }
+        formaPrijava.onsubmit = function(e) {
+            e.preventDefault();
+            let korisnicko_ime = document.getElementById("korisnicko_ime").value;
+            let lozinka = document.getElementById("lozinka").value;
+            socket.emit("prijava", {
+                korisnicko_ime: korisnicko_ime,
+                lozinka: lozinka
+            });
+        }
+        btnReg.onclick = function(e) {
+            e.preventDefault();
+            let korisnicko_ime = document.getElementById("korisnicko_ime").value;
+            let lozinka = document.getElementById("lozinka").value;
+            socket.emit("registracija", {
+                korisnicko_ime: korisnicko_ime,
+                lozinka: lozinka
+            });
+        }
+        socket.on("odgovorNaRegistraciju", function(rezultat) {
+            if (!rezultat.uspeh) alert("Zauzeto korisnicko ime!");
+            else alert("Uspesna registracija");
+        });
+        socket.on("odgovorNaPrijavu", function(rezultat) {
+            if (!rezultat.uspeh) return alert("Netacni podaci. ");
+            formaPrijava.style.display = "none";
+            container.style.display = "block";
+        });
+        socket.on("inicijalizacija", function(podaci) {
+            if (podaci.selfId) {
+                selfId = podaci.selfId;
+            }
+            for (var i = 0; i < podaci.korisnici.length; i++) {
+                new Korisnik(podaci.korisnici[i]);
+            }
+            prikaziKorisnike();
+        });
+        socket.on("dodajUPrivatni", function(podaci) {
+            for (var i in Korisnik.lista) {
+                if (Korisnik.lista[i].korisnicko_ime == podaci.korisnicko_ime) {
+                    Korisnik.lista[i].poruke.push(podaci.poruka);
+                    prikaziPoruke();
+                    return;
+                }
+            }
+        });
+        socket.on("prijavljenKorisnik", function(podaci) {
+            new Korisnik(podaci);
+            prikaziKorisnike();
+        });
+        socket.on("odjavljenKorisnik", function(podaci) {
+            delete Korisnik.lista[podaci.id];
+            prikaziKorisnike();
+        });
+    </script>
+
+</body>
+
+</html>
