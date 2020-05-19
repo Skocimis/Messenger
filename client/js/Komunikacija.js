@@ -1,8 +1,7 @@
 var socket = io();
 
 socket.on("odgovorNaRegistraciju", function(rezultat) {
-    if (!rezultat.uspeh) alert("Zauzeto korisnicko ime!");
-    else alert("Uspesna registracija");
+    document.getElementById("rezPrijave").innerText = rezultat.poruka;
 });
 socket.on("odgovorNaPrijavu", function(rezultat) {
     if (!rezultat.uspeh) return alert("Netacni podaci. ");
