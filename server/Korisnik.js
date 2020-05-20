@@ -8,13 +8,13 @@ Korisnik = function(param) {
         for (var i in Grupa.lista) {
             if (Grupa.lista[i].clanovi.includes(self.korisnicko_ime)) {
                 grupe.push({ id: Grupa.lista[i].id, naziv: Grupa.lista[i].naziv, vlasnik: Grupa.lista[i].vlasnik, clanovi: Grupa.lista[i].clanovi });
-                Grupa.lista[i].socketi.push(self.socket.id);
             }
         }
         return grupe;
     }
     for (var i in Grupa.lista) {
-        if (Grupa.lista[i].clanovi.includes(korisnik.korisnicko_ime)) {
+        if (Grupa.lista[i].clanovi.includes(self.korisnicko_ime)) {
+            console.log("Dodat socket za " + self.korisnicko_ime + " u grupu " + Grupa.lista[i].naziv + "(" + Grupa.lista[i].vlasnik + ")");
             Grupa.lista[i].socketi.push(self.id);
             Grupa.lista[i].updatujKodClanova();
         }
@@ -69,13 +69,21 @@ Korisnik.priPovezivanju = function(socket, korisnicko_ime) {
             console.log("Salje u nepostojecu grupu. ");
             return;
         }
-        for (var i = 0; i < trazenagrupa.clanovi; i++) { //Bilo bi brze da ide kroz sokete, ali za svaki slucaj
-            if (trazenagrupa.clanovi[i] == korisnik.korisnicko_ime) {
-                for (var j in trazenagrupa.socketi) {
-                    SOCKET_LIST[j].emit("dodajPorukuUGrupu", {});
-                }
+        if (trazenagrupa.clanovi.includes(korisnik.korisnicko_ime)) { //Bilo bi brze da ide kroz sokete, ali za svaki slucaj
+            for (var j in trazenagrupa.socketi) {
+                if (SOCKET_LIST[trazenagrupa.socketi[j]])
+                    SOCKET_LIST[trazenagrupa.socketi[j]].emit("dodajPorukuUGrupu", { posiljalac: korisnik.korisnicko_ime, poruka: podaci.poruka, naziv: trazenagrupa.naziv, vlasnik: trazenagrupa.vlasnik });
+                //console.log("saljem");
+
             }
+            return;
         }
+        /*for (var i = 0; i < trazenagrupa.clanovi; i++) { 
+            if (trazenagrupa.clanovi[i] == korisnik.korisnicko_ime) {
+
+            }
+        }*/
+        console.log("Nije clan grupe");
     });
 
     socket.on("napraviGrupu", function(podaci) {
@@ -171,7 +179,7 @@ Korisnik.priOdjavljivanju = function(socket) {
     if (!korisnik) return;
     for (var i in Grupa.lista) {
         if (Grupa.lista[i].clanovi.includes(korisnik.korisnicko_ime)) {
-            Grupa.lista[i].socketi.splice(Grupa.lista[i].indexOf(socket.id), 1);
+            Grupa.lista[i].socketi.splice(Grupa.lista[i].socketi.indexOf(socket.id), 1);
             Grupa.lista[i].updatujKodClanova();
         }
     }

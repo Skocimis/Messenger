@@ -53,9 +53,11 @@ socket.on("dodajUPrivatni", function(podaci) {
     }
 });
 socket.on("dodajPorukuUGrupu", function(podaci) {
+    //alert(podaci.naziv + "(" + podaci.vlasnik + ")");
     for (var i in Grupa.lista) {
         if (Grupa.lista[i].naziv == podaci.naziv && Grupa.lista[i].vlasnik == podaci.vlasnik) {
-            Grupa.lista[i].poruke.push(podaci.poruka);
+            //alert("nova poruka u grupi: " + podaci.poruka);
+            Grupa.lista[i].poruke.push(podaci.posiljalac + ": " + podaci.poruka);
             Poruka.prikaziPoruke();
             return;
         }

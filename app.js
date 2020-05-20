@@ -35,7 +35,7 @@ broadcastuj = function(naziv, podaci) {
         SOCKET_LIST[i].emit(naziv, podaci);
     }
 }
-var SOCKET_LIST = {};
+SOCKET_LIST = {};
 
 //Nova grupa, onaj ko hoce da napravi grupu salje samo naziv i inicijalna grupa se pravi na serveru
 //Prvo da se doda vlasnik u clanove
