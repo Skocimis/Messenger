@@ -9,6 +9,7 @@ var selektSvihKorisnika = document.getElementById("selektkorisnika");
 var posebanSelekt = document.getElementById("posebanselekt");
 var pretragaKorisnika = document.getElementById("pretragaKorisnika");
 var taPoruke = document.getElementById("poslataPoruka");
+var selektSvihGrupa = document.getElementById("grupeselekt");
 
 taPoruke.onkeydown = function(e) {
     if (e.keyCode == 13) {

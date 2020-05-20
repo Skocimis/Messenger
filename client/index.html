@@ -106,7 +106,16 @@
             margin-top: 0px;
             top: 0px;
             min-height: 10%;
+            max-height: 10%;
             width: 100%;
+            overflow-y: auto;
+        }
+        
+        #grupeselekt {
+            width: 100%;
+            margin-top: 0px;
+            top: 0px;
+            height: 100%;
             overflow-y: auto;
         }
     </style>
@@ -130,7 +139,10 @@
             <input type="text" id="pretragaKorisnika" style="box-sizing: border-box;width: 100%; margin-top: 0px; height: 10%; margin-bottom: 0px; ">
             <select id="selektkorisnika"></select>
         </div>
-        <div id="grupe"></div>
+        <div id="grupe">
+            <select id="grupeselekt">
+            </select>
+        </div>
         <div id="izabran"></div>
         <div id="caskanje"></div>
         <div id="posaljiporukudiv">
@@ -145,7 +157,8 @@
     </div>
     <script src="/client/js/lib/socket.io.js"></script>
     <script src="/client/js/klase/Korisnik.js"></script>
-    <script src="/client/js/Klase/Poruka.js"></script>
+    <script src="/client/js/klase/Grupa.js"></script>
+    <script src="/client/js/klase/Poruka.js"></script>
     <script src="/client/js/Komunikacija.js"></script>
     <script src="/client/js/Dogadjaji.js"></script>
 

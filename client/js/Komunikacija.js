@@ -14,13 +14,18 @@ socket.on("inicijalizacija", function(podaci) {
     if (podaci.selfId) {
         selfId = podaci.selfId;
     }
+    //alert(podaci.grupe.length);
     var korisnickaOpcija = document.createElement("option");
     korisnickaOpcija.innerText = "Ja (" + Korisnik.lista[selfId].korisnicko_ime + ")";
     posebanSelekt.appendChild(korisnickaOpcija);
     for (var i = 0; i < podaci.korisnici.length; i++) {
         new Korisnik(podaci.korisnici[i]);
     }
+    for (var i = 0; i < podaci.grupe.length; i++) {
+        new Grupa(podaci.grupe[i]);
+    }
     Korisnik.prikaziSve();
+    Grupa.prikaziSve();
     Poruka.prikaziPoruke();
 });
 socket.on("prijavljenKorisnik", function(podaci) {
@@ -29,6 +34,7 @@ socket.on("prijavljenKorisnik", function(podaci) {
 });
 
 socket.on("odjavljenKorisnik", function(podaci) {
+    //alert("ee");
     if (Korisnik.lista[podaci.id].korisnicko_ime == trenutnirazgovor) {
         Poruka.dodajPoruku(Korisnik.lista[podaci.id].korisnicko_ime + " više nije aktivan. ");
     }

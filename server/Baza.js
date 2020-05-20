@@ -20,6 +20,11 @@ Baza.dobraLozinka = function(podaci, cb) {
     });
 }
 
+Baza.sveGrupe = function(cb) {
+    db.grupe.find({}, function(err, res) {
+        cb(err, res);
+    })
+}
 Baza.postojiGrupa = function(podaci, cb) { //Vlasnik, naziv je jedinstveni kljuc
     db.grupe.findOne({ vlasnik: podaci.vlasnik, naziv: podaci.naziv }, function(err, res) {
         if (res) cb(true);
@@ -38,6 +43,6 @@ Baza.ucitajGrupu = function(podaci, cb) {
 Baza.updatujGrupu = function(podaci, cb) { //{vlasnik, naziv}
     cb = cb || function() {} //Ako cb nije definisan
     db.grupe.update({ vlasnik: podaci.vlasnik, naziv: podaci.naziv }, { $set: { clanovi: podaci.clanovi } }, { upsert: true }, function(err, res) {
-        cb(); //Racunam kao da je uvek uspesno dodavanje u grupu
+        cb(); //Racunam kao da je uvek uspesno dodavanje u grupu, treba izmeniti
     });
 }

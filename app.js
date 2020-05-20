@@ -1,11 +1,25 @@
 require("./server/Baza");
 require("./server/Korisnik");
+require("./server/Grupa");
 
 //cd '..\..\..\..\Programi\MongoDB\Server\4.2\bin\'
 
 var express = require("express");
 var app = express();
 var serv = require("http").Server(app);
+
+Baza.sveGrupe(function(err, res) { //Ucitaj sve postojece grupe u memoriju
+    if (err || !res) process.exit(1);
+    for (var i = 0; i < res.length; i++) {
+        Grupa.ucitaj(res[i]);
+        console.log(Grupa.lista[i]);
+    }
+    /*
+        delete Grupa.lista[0];
+        for (var i = 0; i < Grupa.lista.length; i++) {
+            if (Grupa.lista[i])
+        }*/
+});
 
 app.get("/", function(req, res) {
     res.sendFile(__dirname + "/client/index.html");
@@ -26,7 +40,7 @@ var SOCKET_LIST = {};
 
 //Nova grupa, onaj ko hoce da napravi grupu salje samo naziv i inicijalna grupa se pravi na serveru
 //Prvo da se doda vlasnik u clanove
-var pdc = { vlasnik: "joca", naziv: "rgang", clanovi: ["joca"] };
+/*var pdc = { vlasnik: "joca", naziv: "rganb", clanovi: ["joca"] };
 Baza.postojiGrupa(pdc, function(rezultat) {
     if (rezultat) console.log("Grupa postoji");
     else {
@@ -35,7 +49,7 @@ Baza.postojiGrupa(pdc, function(rezultat) {
             console.log("Napravljena grupa");
         });
     }
-});
+});*/
 
 //
 
@@ -60,6 +74,7 @@ io.sockets.on("connection", function(socket) {
         });
     });
     socket.on("disconnect", function() {
+        console.log("diss");
         Korisnik.priOdjavljivanju(socket);
         delete SOCKET_LIST[socket.id];
     });
