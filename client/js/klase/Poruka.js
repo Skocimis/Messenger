@@ -3,7 +3,7 @@ Poruka = {};
 Poruka.prikaziPoruke = function() {
     divCaskanja.innerHTML = "";
     if (trenutnirazgovor) {
-        var trenutnirazgovarac = Korisnik.nadjiKorisnikaPoImenu(trenutnirazgovor);
+        var trenutnirazgovarac = Korisnik.nadjiKorisnikaPoImenu(trenutnirazgovor); //Zbog srca dodato
         if (trenutnirazgovarac == null) {
             Poruka.dodajPoruku("Obavestenje: Osoba koju pokusavate da kontaktirate trenutno nije aktivna. ")
             return;
@@ -13,7 +13,15 @@ Poruka.prikaziPoruke = function() {
         }
         divIzabranog.innerText = trenutnirazgovor;
     } else if (trenutnagrupa) {
-
+        var trenutnigrupnirazgovor = Grupa.nadjiGrupuPoNazivuIVlasniku(trenutnagrupa);
+        if (trenutnigrupnirazgovor == null) {
+            Poruka.dodajPoruku("Obavestenje: Grupa koju pokusavate da kontaktirate ne postoji. ")
+            return;
+        }
+        for (var i in trenutnigrupnirazgovor.poruke) {
+            Poruka.dodajPoruku(trenutnigrupnirazgovor.poruke[i]);
+        }
+        divIzabranog.innerText = "Grupa: " + trenutnagrupa.naziv + " (" + trenutnagrupa.vlasnik + ")";
     } else //svi
     {
         for (var i in javneporuke) {

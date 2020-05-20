@@ -42,7 +42,18 @@ Baza.ucitajGrupu = function(podaci, cb) {
 }
 Baza.updatujGrupu = function(podaci, cb) { //{vlasnik, naziv}
     cb = cb || function() {} //Ako cb nije definisan
+    podaci.clanovi = podaci.clanovi || [podaci.vlasnik];
     db.grupe.update({ vlasnik: podaci.vlasnik, naziv: podaci.naziv }, { $set: { clanovi: podaci.clanovi } }, { upsert: true }, function(err, res) {
         cb(); //Racunam kao da je uvek uspesno dodavanje u grupu, treba izmeniti
     });
 }
+Baza.obrisiGrupu = function(podaci, cb) {
+    cb = cb || function() {};
+    db.grupe.remove({ vlasnik: podaci.vlasnik, naziv: podaci.naziv }, {
+        justOne: true
+    }, function(err, res) {
+        cb(res.deletedCount == 0 || err);
+    });
+}
+
+//Baza.updatujGrupu({ naziv: "slovo banda", vlasnik: "c", clanovi: ["c", "b", "a"] });

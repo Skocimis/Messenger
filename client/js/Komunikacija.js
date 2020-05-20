@@ -52,6 +52,15 @@ socket.on("dodajUPrivatni", function(podaci) {
         }
     }
 });
+socket.on("dodajPorukuUGrupu", function(podaci) {
+    for (var i in Grupa.lista) {
+        if (Grupa.lista[i].naziv == podaci.naziv && Grupa.lista[i].vlasnik == podaci.vlasnik) {
+            Grupa.lista[i].poruke.push(podaci.poruka);
+            Poruka.prikaziPoruke();
+            return;
+        }
+    }
+});
 socket.on("novaPoruka", function(podaci) {
     javneporuke.push(podaci.poruka); //Podaci bi trebali da sadrze i korisnika koji je poslao poruku ako bih hteo da dodam blokiranje
     Poruka.prikaziPoruke();

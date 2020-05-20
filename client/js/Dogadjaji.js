@@ -21,7 +21,11 @@ taPoruke.onkeydown = function(e) {
                     poruka: taPoruke.value
                 });
             } else if (trenutnagrupa) {
-
+                socket.emit("posaljiPorukuUGrupu", {
+                    vlasnik: trenutnagrupa.vlasnik,
+                    naziv: trenutnagrupa.naziv,
+                    poruka: taPoruke.value
+                });
             } else //svi
             {
                 socket.emit("posaljiPorukuSvima", {
@@ -40,7 +44,7 @@ taPoruke.onkeyup = function(e) {
 pretragaKorisnika.onkeydown = function(e) {
     if (e.keyCode == 13) {
         var korime = pretragaKorisnika.value;
-        trenutnagrupa = "";
+        trenutnagrupa = null;
         trenutnirazgovor = korime;
         Poruka.prikaziPoruke();
         divCaskanja.scrollTop = divCaskanja.scrollHeight;
@@ -64,6 +68,7 @@ formaSlanjaPoruke.onsubmit = function(e) {
     taPoruke.value = "";*/
 }
 
+//Ponavljajuci kod, ali ok radi
 posebanSelekt.onchange = function() {
     if (posebanSelekt.selectedIndex != -1) {
         if (posebanSelekt.selectedIndex == 0) {
@@ -77,6 +82,18 @@ posebanSelekt.onchange = function() {
         divCaskanja.scrollTop = divCaskanja.scrollHeight;
         posebanSelekt.selectedIndex = -1;
         selektSvihKorisnika.selectedIndex = -1;
+        selektSvihGrupa.selectedIndex = -1;
+    }
+}
+selektSvihGrupa.onchange = function() {
+    if (selektSvihGrupa.selectedIndex != -1) {
+        trenutnagrupa = { naziv: Grupa.lista[selektSvihGrupa.value].naziv, vlasnik: Grupa.lista[selektSvihGrupa.value].vlasnik };
+        trenutnirazgovor = null;
+        Poruka.prikaziPoruke();
+        divCaskanja.scrollTop = divCaskanja.scrollHeight;
+        posebanSelekt.selectedIndex = -1;
+        selektSvihKorisnika.selectedIndex = -1;
+        selektSvihGrupa.selectedIndex = -1;
     }
 }
 selektSvihKorisnika.onchange = function() {
@@ -85,9 +102,10 @@ selektSvihKorisnika.onchange = function() {
         trenutnirazgovor = Korisnik.lista[selektSvihKorisnika.value].korisnicko_ime;
         Poruka.prikaziPoruke();
         divCaskanja.scrollTop = divCaskanja.scrollHeight;
+        posebanSelekt.selectedIndex = -1;
+        selektSvihKorisnika.selectedIndex = -1;
+        selektSvihGrupa.selectedIndex = -1;
     }
-    posebanSelekt.selectedIndex = -1;
-    selektSvihKorisnika.selectedIndex = -1;
 }
 
 formaPrijava.onsubmit = function(e) {

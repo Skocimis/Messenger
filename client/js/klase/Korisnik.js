@@ -14,7 +14,6 @@ Korisnik.lista = {};
 var javneporuke = [];
 var selfId = -1;
 var trenutnirazgovor = null;
-var trenutnagrupa = null;
 
 Korisnik.nadjiKorisnikaPoImenu = function(ime) {
     for (var i in Korisnik.lista) {

@@ -12,7 +12,6 @@ Baza.sveGrupe(function(err, res) { //Ucitaj sve postojece grupe u memoriju
     if (err || !res) process.exit(1);
     for (var i = 0; i < res.length; i++) {
         Grupa.ucitaj(res[i]);
-        console.log(Grupa.lista[i]);
     }
     /*
         delete Grupa.lista[0];
