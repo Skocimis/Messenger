@@ -73,7 +73,6 @@ io.sockets.on("connection", function(socket) {
         });
     });
     socket.on("disconnect", function() {
-        console.log("diss");
         Korisnik.priOdjavljivanju(socket);
         delete SOCKET_LIST[socket.id];
     });

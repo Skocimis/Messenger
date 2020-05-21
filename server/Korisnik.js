@@ -3,24 +3,28 @@ Korisnik = function(param) {
     self.id = param.id;
     self.socket = param.socket;
     self.korisnicko_ime = param.korisnicko_ime;
-    self.inicijalizujGrupe = function() { //inicijalizujpostojece, pravi init pack za jednog korisnika
+    /*self.inicijalizujGrupe = function() { //inicijalizujpostojece, pravi init pack za jednog korisnika
         var grupe = [];
         for (var i in Grupa.lista) {
             if (Grupa.lista[i].clanovi.includes(self.korisnicko_ime)) {
-                grupe.push({ id: Grupa.lista[i].id, naziv: Grupa.lista[i].naziv, vlasnik: Grupa.lista[i].vlasnik, clanovi: Grupa.lista[i].clanovi });
+                //Mozda treba dodavanje soketa za grupu
+                Grupa.lista[i].updatujKodClanova();
+                //grupe.push({ id: Grupa.lista[i].id, naziv: Grupa.lista[i].naziv, vlasnik: Grupa.lista[i].vlasnik, clanovi: Grupa.lista[i].clanovi, aktivni: onlajnclanovi });
             }
         }
         return grupe;
-    }
-    for (var i in Grupa.lista) {
-        if (Grupa.lista[i].clanovi.includes(self.korisnicko_ime)) {
-            console.log("Dodat socket za " + self.korisnicko_ime + " u grupu " + Grupa.lista[i].naziv + "(" + Grupa.lista[i].vlasnik + ")");
-            Grupa.lista[i].socketi.push(self.id);
-            Grupa.lista[i].updatujKodClanova();
-        }
-    }
+    }*/
     broadcastuj("prijavljenKorisnik", { id: self.id, korisnicko_ime: self.korisnicko_ime }); //Mozda ne bi trebalo ovde
     Korisnik.lista[self.id] = self;
+    for (var i in Grupa.lista) {
+        if (Grupa.lista[i].clanovi.includes(self.korisnicko_ime)) {
+            Grupa.lista[i].socketi.push(self.id);
+            //console.log(Grupa.lista[i].socketi);
+            //Grupa.lista[i].prikaziIme();
+            Grupa.updatujKodClanova(Grupa.lista[i]);
+            //Grupa.lista[i].updatujKodClanova();
+        }
+    }
     return self;
 }
 Korisnik.lista = {};
@@ -37,7 +41,7 @@ Korisnik.priPovezivanju = function(socket, korisnicko_ime) {
         socket: socket,
         korisnicko_ime: korisnicko_ime
     });
-    socket.emit("inicijalizacija", { selfId: socket.id, korisnici: Korisnik.inicijalizujPovezane(), grupe: korisnik.inicijalizujGrupe() });
+    socket.emit("inicijalizacija", { selfId: socket.id, korisnici: Korisnik.inicijalizujPovezane() });
     socket.on("posaljiDmKorisniku", function(podaci) { //Ovde ne bi trebalo da moze da se cituje zato sto se salje korisnicko ime primaoca i tekst poruke, korisnicko ime posiljaoca zavisi od socketa
         var primalac = null;
         for (var i in Korisnik.lista) {
@@ -87,19 +91,22 @@ Korisnik.priPovezivanju = function(socket, korisnicko_ime) {
     });
 
     socket.on("napraviGrupu", function(podaci) {
-        Baza.postojiGrupa(podaci, function(rez) {
+        Baza.postojiGrupa({ vlasnik: korisnik.korisnicko_ime, naziv: podaci.naziv }, function(rez) { //Ovo proverava u bazi a treba u memoriji, treba da se izmeni
             if (rez) {
                 socket.emit("odgovorNaPravljenjeGrupe", { poruka: "Vec ste admin grupe " + podaci.naziv })
             } else {
                 Baza.updatujGrupu({ vlasnik: korisnik.korisnicko_ime, naziv: podaci.naziv, clanovi: [korisnik.korisnicko_ime] }, function() {
-                    Grupa.ucitaj({ vlasnik: korisnik.korisnicko_ime, naziv: podaci.naziv, clanovi: [korisnik.korisnicko_ime], socketi: [socket.id] });
+                    Grupa.ucitaj({ vlasnik: korisnik.korisnicko_ime, naziv: podaci.naziv, clanovi: [korisnik.korisnicko_ime], socketi: [socket.id] }); //samo pravi grupu
                     socket.emit("odgovorNaPravljenjeGrupe", { poruka: "Uspesno napravljena grupa " + podaci.naziv });
+
+                    Grupa.updatujKodClanova(Grupa.lista[Grupa.lista.length - 1]);
                 });
             }
         });
     });
     socket.on("obrisiGrupu", function(podaci) {
         for (var i in Grupa.lista) {
+            //console.log(podaci.naziv + " " + korisnik.korisnicko_ime);
             if (Grupa.lista[i].naziv == podaci.naziv && Grupa.lista[i].vlasnik == korisnik.korisnicko_ime) {
                 Baza.obrisiGrupu({ naziv: podaci.naziv, vlasnik: Grupa.lista[i].vlasnik }, function(neobrisana) {
                     if (neobrisana) {
@@ -120,14 +127,25 @@ Korisnik.priPovezivanju = function(socket, korisnicko_ime) {
     });
     //MOZDA LOSI RETURNOVI
     socket.on("dodajClanaUGrupu", function(podaci) {
+        //console.log(podaci.korisnicko_ime);
         for (var i in Grupa.lista) {
             if (Grupa.lista[i].naziv == podaci.naziv && Grupa.lista[i].vlasnik == korisnik.korisnicko_ime) {
                 Baza.iskoriscenoIme({ korisnicko_ime: podaci.korisnicko_ime }, function(rez) {
-                    if (!rez) {
+                    if (rez) {
+
+                        if (Grupa.lista[i].clanovi.includes(podaci.korisnicko_ime)) {
+                            socket.emit("odgovorNaDodavanjeClana", { poruka: "Korisnik je vec u grupi. " });
+                            return;
+                        }
                         Grupa.lista[i].clanovi.push(podaci.korisnicko_ime);
                         Baza.updatujGrupu({ vlasnik: korisnik.korisnicko_ime, naziv: podaci.naziv, clanovi: Grupa.lista[i].clanovi }, function() {
                             socket.emit("odgovorNaDodavanjeClana", { poruka: "Uspesno dodavanje u grupu" });
-                            Grupa.lista[i].updatujKodClanova();
+                            for (var j in Korisnik.lista) {
+                                if (Korisnik.lista[j].korisnicko_ime == podaci.korisnicko_ime) {
+                                    Grupa.lista[i].socketi.push(j); //socket i korisnik imaju isti id
+                                }
+                            }
+                            Grupa.updatujKodClanova(Grupa.lista[i]);
                             return;
                         });
                         return;
@@ -141,21 +159,28 @@ Korisnik.priPovezivanju = function(socket, korisnicko_ime) {
     });
     socket.on("ukloniClanaIzGrupe", function(podaci) {
         for (var i in Grupa.lista) {
-            if (Grupa.lista[i].naziv == podaci.naziv && Grupa.lista[i].vlasnik == korisnik.korisnicko_ime) {
+            if (Grupa.lista[i].naziv == podaci.naziv && Grupa.lista[i].vlasnik == podaci.vlasnik) {
                 Baza.iskoriscenoIme({ korisnicko_ime: podaci.korisnicko_ime }, function(rez) {
-                    if (!rez) {
-                        if (Grupa.lista[i].indexOf(podaci.korisnicko_ime) != -1) {
-                            Grupa.lista[i].clanovi.splice(Grupa.lista[i].indexOf(podaci.korisnicko_ime), 1);
-                            Baza.updatujGrupu({ vlasnik: korisnik.korisnicko_ime, naziv: podaci.naziv, clanovi: Grupa.lista[i].clanovi }, function() {
-                                socket.emit("odgovorNaUklanjanjeClana", { poruka: "Uspesno uklanjanje clana" });
-                            });
-                            for (var j in Korisnik.lista) {
-                                if (Korisnik.lista[j].korisnicko_ime == podaci.korisnicko_ime) {
-                                    Korisnik.lista[j].socket.emit("obrisanaGrupa", { vlasnik: korisnik.korisnicko_ime, naziv: podaci.naziv }); //TREBA HANDLER NA KLIJENTU
-                                }
+                    if (rez) {
+                        if (Grupa.lista[i].clanovi.indexOf(podaci.korisnicko_ime) != -1) {
+                            if (korisnik.korisnicko_ime == podaci.vlasnik || korisnik.korisnicko_ime == podaci.korisnicko_ime) {
+                                Grupa.lista[i].clanovi.splice(Grupa.lista[i].clanovi.indexOf(podaci.korisnicko_ime), 1);
+                                console.log(Grupa.lista[i].clanovi);
+                                Baza.updatujGrupu({ vlasnik: podaci.vlasnik, naziv: podaci.naziv, clanovi: Grupa.lista[i].clanovi }, function() {
+                                    socket.emit("odgovorNaUklanjanjeClana", { poruka: "Uspesno uklanjanje clana" });
+                                    for (var j in Korisnik.lista) {
+                                        if (Korisnik.lista[j].korisnicko_ime == podaci.korisnicko_ime) {
+                                            Korisnik.lista[j].socket.emit("obrisanaGrupa", { vlasnik: podaci.vlasnik, naziv: podaci.naziv });
+                                            console.log("Emitovano " + Korisnik.lista[j].korisnicko_ime + "-u");
+                                            Grupa.lista[i].socketi.splice(Grupa.lista[i].socketi.indexOf(j), 1);
+                                        }
+                                    }
+                                    Grupa.updatujKodClanova(Grupa.lista[i]);
+                                });
+                                return;
+                                //Ako nesto ne radi kod brisanja vrv je greska ovde ili kod pisanja u bazu
                             }
-                            //Updatovanje soketa
-                            //Updatovanje aktivnih kod korisnika
+                            socket.emit("odgovorNaUklanjanjeClana", { poruka: "Nemate dozvolu za zeljenu akciju" });
                             return;
                         }
                         socket.emit("odgovorNaUklanjanjeClana", { poruka: "Korisnik nije u grupi" });
@@ -180,7 +205,7 @@ Korisnik.priOdjavljivanju = function(socket) {
     for (var i in Grupa.lista) {
         if (Grupa.lista[i].clanovi.includes(korisnik.korisnicko_ime)) {
             Grupa.lista[i].socketi.splice(Grupa.lista[i].socketi.indexOf(socket.id), 1);
-            Grupa.lista[i].updatujKodClanova();
+            Grupa.updatujKodClanova(Grupa.lista[i]);
         }
     }
     broadcastuj("odjavljenKorisnik", { id: socket.id });

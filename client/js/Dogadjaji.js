@@ -10,6 +10,70 @@ var posebanSelekt = document.getElementById("posebanselekt");
 var pretragaKorisnika = document.getElementById("pretragaKorisnika");
 var taPoruke = document.getElementById("poslataPoruka");
 var selektSvihGrupa = document.getElementById("grupeselekt");
+var adminKomande = document.getElementById("adminkomande");
+var smrtnikKomande = document.getElementById("smrtnikkomande");
+var selektAktivnihClanova = document.getElementById("selektaktivnihclanova");
+var selektSvihClanova = document.getElementById("selektsvihclanova");
+var btnBrisiGrupu = document.getElementById("btnBrisiGrupu");
+var tbNapraviGrupu = document.getElementById("tbNapraviGrupu");
+var btnIzadji = document.getElementById("btnIzadji");
+var dodajClanaInpt = document.getElementById("dodajClanaInpt");
+var izbaciClanaInput = document.getElementById("izbaciClanaInput");
+var opcijeCont = document.getElementById("opcijecont");
+
+
+dodajClanaInpt.onkeydown = function(e) {
+    if (e.keyCode == 13) {
+        if (/\S/.test(dodajClanaInpt.value)) //Ako poruka nema whitespace ne salje se
+        {
+            socket.emit("dodajClanaUGrupu", { korisnicko_ime: dodajClanaInpt.value, naziv: trenutnagrupa.naziv });
+        }
+        dodajClanaInpt.value = "";
+    }
+}
+dodajClanaInpt.onkeyup = function(e) {
+    if (e.keyCode == 13) {
+        dodajClanaInpt.value = "";
+    }
+}
+izbaciClanaInput.onkeydown = function(e) {
+    if (e.keyCode == 13) {
+        if (/\S/.test(izbaciClanaInput.value)) //Ako poruka nema whitespace ne salje se
+        {
+            socket.emit("ukloniClanaIzGrupe", { korisnicko_ime: izbaciClanaInput.value, vlasnik: trenutnagrupa.vlasnik, naziv: trenutnagrupa.naziv });
+        }
+        izbaciClanaInput.value = "";
+    }
+}
+izbaciClanaInput.onkeyup = function(e) {
+    if (e.keyCode == 13) {
+        izbaciClanaInput.value = "";
+    }
+}
+btnIzadji.onclick = function(e) {
+    socket.emit("ukloniClanaIzGrupe", { korisnicko_ime: Korisnik.lista[selfId].korisnicko_ime, vlasnik: trenutnagrupa.vlasnik, naziv: trenutnagrupa.naziv });
+}
+tbNapraviGrupu.onkeydown = function(e) {
+    if (e.keyCode == 13) {
+        if (/\S/.test(tbNapraviGrupu.value)) //Ako poruka nema whitespace ne salje se
+        {
+            socket.emit("napraviGrupu", { naziv: tbNapraviGrupu.value });
+        }
+        tbNapraviGrupu.value = "";
+    }
+}
+tbNapraviGrupu.onkeyup = function(e) {
+    if (e.keyCode == 13) {
+        tbNapraviGrupu.value = "";
+    }
+}
+btnBrisiGrupu.onclick = function() {
+    socket.emit("obrisiGrupu", { naziv: trenutnagrupa.naziv });
+}
+
+
+
+
 
 taPoruke.onkeydown = function(e) {
     if (e.keyCode == 13) {
@@ -83,6 +147,7 @@ posebanSelekt.onchange = function() {
         posebanSelekt.selectedIndex = -1;
         selektSvihKorisnika.selectedIndex = -1;
         selektSvihGrupa.selectedIndex = -1;
+        opcijeCont.style.display = "none";
     }
 }
 selektSvihGrupa.onchange = function() {
@@ -90,6 +155,7 @@ selektSvihGrupa.onchange = function() {
         trenutnagrupa = { naziv: Grupa.lista[selektSvihGrupa.value].naziv, vlasnik: Grupa.lista[selektSvihGrupa.value].vlasnik };
         trenutnirazgovor = null;
         Poruka.prikaziPoruke();
+        Grupa.prikaziOpcije();
         divCaskanja.scrollTop = divCaskanja.scrollHeight;
         posebanSelekt.selectedIndex = -1;
         selektSvihKorisnika.selectedIndex = -1;
@@ -105,6 +171,7 @@ selektSvihKorisnika.onchange = function() {
         posebanSelekt.selectedIndex = -1;
         selektSvihKorisnika.selectedIndex = -1;
         selektSvihGrupa.selectedIndex = -1;
+        opcijeCont.style.display = "none";
     }
 }
 

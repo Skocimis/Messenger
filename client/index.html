@@ -5,120 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <style>
-        html {
-            height: 100%;
-        }
-        
-        body {
-            margin: 0;
-            height: 100%;
-            width: 100%;
-        }
-        
-        textarea {
-            resize: none;
-        }
-        
-        textarea,
-        button {
-            display: inline-block;
-            vertical-align: top;
-        }
-        
-        #container {
-            position: relative;
-            display: none;
-            width: 100%;
-            height: 100%;
-        }
-        
-        #svi {
-            position: fixed;
-            top: 0px;
-            left: 0px;
-            width: 20%;
-            height: 50%;
-            background-color: pink;
-        }
-        
-        #caskanje {
-            width: 60%;
-            margin-left: 20%;
-            margin-right: 20%;
-            overflow-y: auto;
-            height: 80%;
-            background-color: red;
-        }
-        
-        #izabran {
-            top: 0px;
-            width: 60%;
-            margin-left: 20%;
-            margin-right: 20%;
-            height: 10%;
-            background-color: teal;
-        }
-        
-        #posaljiporukudiv {
-            width: 60%;
-            margin-left: 20%;
-            margin-right: 20%;
-            height: 10%;
-            bottom: 0px;
-            background-color: yellow;
-        }
-        
-        #grupe {
-            position: fixed;
-            bottom: 0px;
-            left: 0px;
-            height: 50%;
-            width: 20%;
-            background-color: green;
-        }
-        
-        #podesavanja {
-            position: fixed;
-            top: 0px;
-            right: 0px;
-            background-color: grey;
-            width: 20%;
-            height: 30%;
-        }
-        
-        #clanovi {
-            position: fixed;
-            bottom: 0px;
-            right: 0px;
-            background-color: blue;
-            width: 20%;
-            height: 70%;
-        }
-        
-        #selektkorisnika {
-            width: 100%;
-            height: 80%;
-            overflow-y: auto;
-        }
-        
-        #posebanselekt {
-            margin-top: 0px;
-            top: 0px;
-            min-height: 10%;
-            max-height: 10%;
-            width: 100%;
-            overflow-y: auto;
-        }
-        
-        #grupeselekt {
-            width: 100%;
-            margin-top: 0px;
-            top: 0px;
-            height: 100%;
-            overflow-y: auto;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="client/css/style.css">
 </head>
 
 <body>
@@ -151,8 +38,30 @@
                 <!--<button type="submit" style="right: 0px; width: 10%;margin: 0px; height: 100%;">Posalji</button>-->
             </form>
         </div>
-        <div id="clanovi"></div>
-        <div id="podesavanja"></div>
+        <div id="grupadiv">
+            <div id="opcijecont">
+                <div id="smrtnikkomande">
+                    <button id="btnIzadji">Izadji iz grupe</button>
+                </div>
+                <div id="adminkomande">
+                    <button id="btnBrisiGrupu">Ugasi grupu</button>
+                    <br>
+                    <label for="dodavanje">Dodaj clana: </label>
+                    <input type="text" id="dodajClanaInpt">
+                    <br>
+                    <label for="izbacivanje">Izbaci clana: </label>
+                    <input type="text" id="izbaciClanaInput">
+                </div>
+                <label for="aktiviii">Aktivni clanovi: </label>
+                <select id="selektaktivnihclanova" size="2"></select>
+                <label for="sviii">Svi clanovi: </label>
+                <select id="selektsvihclanova" size="2"></select>
+            </div>
+
+        </div>
+        <div id="podesavanja">
+            <input type="text" id="tbNapraviGrupu">
+        </div>
 
     </div>
     <script src="/client/js/lib/socket.io.js"></script>
