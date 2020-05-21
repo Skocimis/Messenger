@@ -7,6 +7,7 @@ socket.on("odgovorNaPrijavu", function(rezultat) {
     if (!rezultat.uspeh) return alert("Netacni podaci. ");
     formaPrijava.style.display = "none";
     container.style.display = "block";
+    updateElements();
 });
 
 
@@ -15,9 +16,9 @@ socket.on("inicijalizacija", function(podaci) {
         selfId = podaci.selfId;
     }
     //alert(podaci.grupe.length);
-    var korisnickaOpcija = document.createElement("option");
+    /*var korisnickaOpcija = document.createElement("option");
     korisnickaOpcija.innerText = "Ja (" + Korisnik.lista[selfId].korisnicko_ime + ")";
-    posebanSelekt.appendChild(korisnickaOpcija);
+    posebanSelekt.appendChild(korisnickaOpcija);*/
     for (var i = 0; i < podaci.korisnici.length; i++) {
         new Korisnik(podaci.korisnici[i]);
     }
@@ -25,7 +26,7 @@ socket.on("inicijalizacija", function(podaci) {
         new Grupa(podaci.grupe[i]);
     }*/
     Korisnik.prikaziSve();
-    //Grupa.prikaziSve();
+    Grupa.prikaziSve();
     Poruka.prikaziPoruke();
 });
 socket.on("prijavljenKorisnik", function(podaci) {

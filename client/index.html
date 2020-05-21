@@ -4,11 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
     <title>Document</title>
-    <link rel="stylesheet" type="text/css" href="client/css/style.css">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="client/css/style.css">
 </head>
 
 <body>
+
     <div id="prijavljivanje">
         <form id="logregforma">
             <input type="text" id="korisnicko_ime"><br>
@@ -18,51 +25,78 @@
         </form>
         <p id="rezPrijave"></p>
     </div>
-    <div id="container">
-        <div id="svi">
-            <select size="2" id="posebanselekt">
-                <option value="0">#SVI</option>
-            </select>
-            <input type="text" id="pretragaKorisnika" style="box-sizing: border-box;width: 100%; margin-top: 0px; height: 10%; margin-bottom: 0px; ">
-            <select id="selektkorisnika"></select>
+    <div id="container" style="display: none;">
+        <div id="korisnici">
+            <h1 id="korisniciNaslov">Korisnici</h1>
+            <div id="formaPretragaKorisnika">
+                <label for="pretragaKorisnika" id="lbPretragaKorisnika">Ručni unos korinsnika: </label>
+                <input type="text" id="tbPretragaKorisnika">
+            </div>
+            <div id="listakorisnika">
+                <a href="#">Skocimis</a>
+                <a href="#">Aleksandar</a>
+                <a href="#">a</a>
+                <a href="#">Korisnik korisnikkk krs ksnks</a>
+                <a href="#">cika</a>
+                <a href="#">Skocimis</a>
+                <a href="#">Aleksandar</a>
+                <a href="#">a</a>
+                <a href="#">Korisnik korisnikkk krs ksnks</a>
+                <a href="#">cika</a>
+                <a href="#">Skocimis</a>
+                <a href="#">Aleksandar</a>
+                <a href="#">a</a>
+                <a href="#">Korisnik korisnikkk krs ksnks</a>
+                <a href="#">cika</a>
+            </div>
+            <div id="formaPravljenjaGrupe">
+                <label for="napraviGrupu">Napravi novu grupu: </label>
+                <input type="text" id="tbNapraviGrupu">
+            </div>
         </div>
         <div id="grupe">
-            <select id="grupeselekt">
-            </select>
-        </div>
-        <div id="izabran"></div>
-        <div id="caskanje"></div>
-        <div id="posaljiporukudiv">
-            <form id="formaSlanjaPoruke" style="width: 100%; margin: 0px; height: 100%;">
-                <textarea id="poslataPoruka" cols="40" rows="5" style="width: 100%;margin: 0px;"></textarea>
-                <!--<button type="submit" style="right: 0px; width: 10%;margin: 0px; height: 100%;">Posalji</button>-->
-            </form>
-        </div>
-        <div id="grupadiv">
-            <div id="opcijecont">
-                <div id="smrtnikkomande">
-                    <button id="btnIzadji">Izadji iz grupe</button>
-                </div>
-                <div id="adminkomande">
-                    <button id="btnBrisiGrupu">Ugasi grupu</button>
-                    <br>
-                    <label for="dodavanje">Dodaj clana: </label>
-                    <input type="text" id="dodajClanaInpt">
-                    <br>
-                    <label for="izbacivanje">Izbaci clana: </label>
-                    <input type="text" id="izbaciClanaInput">
-                </div>
-                <label for="aktiviii">Aktivni clanovi: </label>
-                <select id="selektaktivnihclanova" size="2"></select>
-                <label for="sviii">Svi clanovi: </label>
-                <select id="selektsvihclanova" size="2"></select>
+            <h1>Grupe</h1>
+            <div id="formaPretragaGrupa">
+                <label for="pretragaGrupa">Ručni unos naziva grupe: </label>
+                <input type="text" id="tbPretragaGrupa">
             </div>
-
+            <div id="listagrupa">
+                <a href="#">Skocimiseva grupa</a>
+                <a href="#">Aleksandar (a)</a>
+                <a href="#">a (jovan)</a>
+                <a href="#">Grupa za smesne slike</a>
+            </div>
         </div>
-        <div id="podesavanja">
-            <input type="text" id="tbNapraviGrupu">
+        <div id="srednjibar">
+            <div id="heder">
+                <h1 id="izabran">Naziv</h1>
+            </div>
+            <div id="poruke"></div>
+            <div id="unos">
+                <textarea id="taPoruke"></textarea>
+            </div>
         </div>
-
+        <div id="grupa">
+            <h1>Upravljanje grupom</h1>
+            <div id="smrtnikkomande">
+                <input type="text" id="btnIzadji">
+            </div>
+            <div id="adminkomande">
+                <button id="btnBrisiGrupu" style="color: red;">Obriši grupu</button>
+                <br>
+                <label for="dodajClana">Dodaj novog člana</label>
+                <br>
+                <input type="text" id="dodajClanaInput">
+                <br>
+                <label for="izbaciClana">Izbaci člana iz grupe</label>
+                <br>
+                <input type="text" id="izbaciClanaInput">
+            </div>
+            <h2>Trenutno aktivni: </h2>
+            <div id="listaaktivnihclanova">Lista aktivnih clanova</div>
+            <h2>Svi članovi:</h2>
+            <div id="listasvihclanova">Lista aktivnih clanova</div>
+        </div>
     </div>
     <script src="/client/js/lib/socket.io.js"></script>
     <script src="/client/js/klase/Korisnik.js"></script>
@@ -70,7 +104,6 @@
     <script src="/client/js/klase/Poruka.js"></script>
     <script src="/client/js/Komunikacija.js"></script>
     <script src="/client/js/Dogadjaji.js"></script>
-
 </body>
 
 </html>

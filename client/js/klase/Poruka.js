@@ -21,7 +21,7 @@ Poruka.prikaziPoruke = function() {
         for (var i in trenutnigrupnirazgovor.poruke) {
             Poruka.dodajPoruku(trenutnigrupnirazgovor.poruke[i]);
         }
-        divIzabranog.innerText = "Grupa: " + trenutnagrupa.naziv + " (" + trenutnagrupa.vlasnik + ")";
+        divIzabranog.innerText = trenutnagrupa.naziv + " (" + trenutnagrupa.vlasnik + ")";
     } else //svi
     {
         for (var i in javneporuke) {
@@ -29,6 +29,8 @@ Poruka.prikaziPoruke = function() {
         }
         divIzabranog.innerText = "#SVI";
     }
+    Grupa.prikaziOpcije();
+    updateElements();
     //u suprotnom su grupe
 }
 Poruka.dodajPoruku = function(tekst) { //Posiljalac je trenutno deo teksta poruke

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="client/css/style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div id="prijavljivanje">
+        <form id="logregforma">
+            <input type="text" id="korisnicko_ime"><br>
+            <input type="password" id="lozinka"><br>
+            <button id="prijava" type="submit">Prijava</button>
+            <button id="registracija">Registracija</button>
+        </form>
+        <p id="rezPrijave"></p>
+    </div>
+    <div id="container">
+        <div id="svi">
+            <select size="2" id="posebanselekt">
+                <option value="0">#SVI</option>
+            </select>
+            <input type="text" id="pretragaKorisnika" style="box-sizing: border-box;width: 100%; margin-top: 0px; height: 10%; margin-bottom: 0px; ">
+            <select id="selektkorisnika"></select>
+        </div>
+        <div id="grupe">
+            <select id="grupeselekt">
+            </select>
+        </div>
+        <div id="izabran"></div>
+        <div id="caskanje"></div>
+        <div id="posaljiporukudiv">
+            <form id="formaSlanjaPoruke" style="width: 100%; margin: 0px; height: 100%;">
+                <textarea id="poslataPoruka" cols="40" rows="5" style="width: 100%;margin: 0px;"></textarea>
+                <!--<button type="submit" style="right: 0px; width: 10%;margin: 0px; height: 100%;">Posalji</button>-->
+            </form>
+        </div>
+        <div id="grupadiv">
+            <div id="opcijecont">
+                <div id="smrtnikkomande">
+                    <button id="btnIzadji">Izadji iz grupe</button>
+                </div>
+                <div id="adminkomande">
+                    <button id="btnBrisiGrupu">Ugasi grupu</button>
+                    <br>
+                    <label for="dodavanje">Dodaj clana: </label>
+                    <input type="text" id="dodajClanaInpt">
+                    <br>
+                    <label for="izbacivanje">Izbaci clana: </label>
+                    <input type="text" id="izbaciClanaInput">
+                </div>
+                <label for="aktiviii">Aktivni clanovi: </label>
+                <select id="selektaktivnihclanova" size="2"></select>
+                <label for="sviii">Svi clanovi: </label>
+                <select id="selektsvihclanova" size="2"></select>
+            </div>
+
+        </div>
+        <div id="podesavanja">
+            <input type="text" id="tbNapraviGrupu">
+        </div>
+
+    </div>
+    <script src="/client/js/lib/socket.io.js"></script>
+    <script src="/client/js/klase/Korisnik.js"></script>
+    <script src="/client/js/klase/Grupa.js"></script>
+    <script src="/client/js/klase/Poruka.js"></script>
+    <script src="/client/js/Komunikacija.js"></script>
+    <script src="/client/js/Dogadjaji.js"></script>
+
+</body>
+
+</html>

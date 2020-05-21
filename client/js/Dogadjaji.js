@@ -1,25 +1,47 @@
 var formaPrijava = document.getElementById("logregforma");
 var container = document.getElementById("container");
 var btnReg = document.getElementById("registracija");
-var divCaskanja = document.getElementById("caskanje");
+var divCaskanja = document.getElementById("poruke");
 var divSvihKorisnika = document.getElementById("svi");
 var divIzabranog = document.getElementById("izabran");
 var formaSlanjaPoruke = document.getElementById("formaSlanjaPoruke");
-var selektSvihKorisnika = document.getElementById("selektkorisnika");
-var posebanSelekt = document.getElementById("posebanselekt");
-var pretragaKorisnika = document.getElementById("pretragaKorisnika");
-var taPoruke = document.getElementById("poslataPoruka");
-var selektSvihGrupa = document.getElementById("grupeselekt");
+var listaKorisnika = document.getElementById("listakorisnika");
+var listaGrupa = document.getElementById("listagrupa");
+var pretragaKorisnika = document.getElementById("tbPretragaKorisnika");
+var pretragaGrupa = document.getElementById("tbPretragaGrupa");
+var taPoruke = document.getElementById("taPoruke");
 var adminKomande = document.getElementById("adminkomande");
 var smrtnikKomande = document.getElementById("smrtnikkomande");
-var selektAktivnihClanova = document.getElementById("selektaktivnihclanova");
-var selektSvihClanova = document.getElementById("selektsvihclanova");
+var listaAktivnihClanova = document.getElementById("listaaktivnihclanova");
+var listaSvihClanova = document.getElementById("listasvihclanova");
 var btnBrisiGrupu = document.getElementById("btnBrisiGrupu");
 var tbNapraviGrupu = document.getElementById("tbNapraviGrupu");
 var btnIzadji = document.getElementById("btnIzadji");
-var dodajClanaInpt = document.getElementById("dodajClanaInpt");
+var dodajClanaInpt = document.getElementById("dodajClanaInput");
 var izbaciClanaInput = document.getElementById("izbaciClanaInput");
-var opcijeCont = document.getElementById("opcijecont");
+var opcijeCont = document.getElementById("grupa");
+var hederDiv = document.getElementById("heder");
+var teloDokumenta = document.querySelector("body");
+
+updateElements = function() {
+    var w = window.innerWidth;
+    var h = window.innerHeight;
+    if (trenutnagrupa) {
+        teloDokumenta.style.backgroundColor = "rgb(13, 41, 29)";
+        document.getElementById("srednjibar").style.maxWidth = (w - 500) + "px";
+    } else {
+        teloDokumenta.style.backgroundColor = "rgb(21, 36, 85)";
+        document.getElementById("srednjibar").style.maxWidth = (w - 200) + "px";
+    }
+    //console.log(h + " - " + hederDiv.offsetHeight + " - " + taPoruke.offsetHeight + " - " + hederDiv.clientTop);
+    divCaskanja.style.height = (h - hederDiv.offsetHeight - taPoruke.offsetHeight) + "px";
+    //alert((h - hederDiv.offsetHeight - taPoruke.offsetHeight));
+    //taPoruke.
+}
+window.onresize = function() {
+    updateElements();
+}
+
 
 
 dodajClanaInpt.onkeydown = function(e) {
@@ -105,6 +127,34 @@ taPoruke.onkeyup = function(e) {
         taPoruke.value = "";
     }
 }
+pretragaGrupa.onkeydown = function(e) {
+    if (e.keyCode == 13) {
+        var str = pretragaGrupa.value;
+        var naziv = "";
+        var vlasnik = null;
+        if (str.indexOf("(") > 1 && str.indexOf(")") > 1 && str.indexOf(")") > str.indexOf("(")) {
+            naziv = str.substring(0, str.indexOf("(") - 1);
+            vlasnik = str.substring(str.indexOf("(") + 1, str.indexOf(")"));
+        } else {
+            naziv = str;
+        }
+        var grupa = Grupa.nadjiGrupuPoNazivuIVlasniku({ naziv: naziv, vlasnik: vlasnik });
+        if (grupa) {
+            trenutnirazgovor = null;
+            trenutnagrupa = { naziv: grupa.naziv, vlasnik: grupa.vlasnik }
+            Poruka.prikaziPoruke();
+            divCaskanja.scrollTop = divCaskanja.scrollHeight;
+        } else {
+            alert("Nepostojeca grupa: " + naziv + "-" + vlasnik);
+        }
+    }
+}
+pretragaGrupa.onkeyup = function(e) {
+    if (e.keyCode == 13) {
+        pretragaGrupa.value = "";
+    }
+}
+
 pretragaKorisnika.onkeydown = function(e) {
     if (e.keyCode == 13) {
         var korime = pretragaKorisnika.value;
@@ -115,24 +165,30 @@ pretragaKorisnika.onkeydown = function(e) {
     }
 }
 pretragaKorisnika.onkeyup = function(e) {
-    if (e.keyCode == 13) {
-        pretragaKorisnika.value = "";
+        if (e.keyCode == 13) {
+            pretragaKorisnika.value = "";
+        }
     }
-}
-
-formaSlanjaPoruke.onsubmit = function(e) {
-    e.preventDefault();
-    //Samo ako je selektovan neki korisnik
-    /*if (taPoruke.value != "") {
-        socket.emit("posaljiDmKorisniku", {
-            korisnicko_ime: Korisnik.lista[selektSvihKorisnika.value].korisnicko_ime,
-            poruka: taPoruke.value
-        });
-    }
-    taPoruke.value = "";*/
-}
+    /*
+    formaSlanjaPoruke.onsubmit = function(e) {
+        e.preventDefault();
+        //Samo ako je selektovan neki korisnik
+        /*if (taPoruke.value != "") {
+            socket.emit("posaljiDmKorisniku", {
+                korisnicko_ime: Korisnik.lista[selektSvihKorisnika.value].korisnicko_ime,
+                poruka: taPoruke.value
+            });
+        }
+        taPoruke.value = "";* /
+    }*/
 
 //Ponavljajuci kod, ali ok radi
+/*
+
+
+
+
+
 posebanSelekt.onchange = function() {
     if (posebanSelekt.selectedIndex != -1) {
         if (posebanSelekt.selectedIndex == 0) {
@@ -174,6 +230,11 @@ selektSvihKorisnika.onchange = function() {
         opcijeCont.style.display = "none";
     }
 }
+
+
+
+
+*/
 
 formaPrijava.onsubmit = function(e) {
     e.preventDefault();

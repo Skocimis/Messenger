@@ -22,31 +22,32 @@ Korisnik.nadjiKorisnikaPoImenu = function(ime) {
     return null;
 }
 Korisnik.prikaziSve = function() {
-    /*var idtrenutnoselektovanog = selektSvihKorisnika.selectedIndex;
-    if (idtrenutnoselektovanog != -1)
-        var trenutnoselektovan = selektSvihKorisnika.options[idtrenutnoselektovanog].value;*/
-    selektSvihKorisnika.innerHTML = "";
-    selektSvihKorisnika.size = Object.keys(Korisnik.lista).length + 1; //Da ne bi bio 1
+    listaKorisnika.innerHTML = "";
+    let samSaSobom = document.createElement("a");
+    samSaSobom.href = "#";
+    if (Korisnik.lista[selfId])
+        samSaSobom.innerText = "Ja (" + Korisnik.lista[selfId].korisnicko_ime + ")";
+    samSaSobom.onclick = function() {
+        trenutnagrupa = null;
+        trenutnirazgovor = Korisnik.lista[selfId].korisnicko_ime;
+        Poruka.prikaziPoruke();
+        divCaskanja.scrollTop = divCaskanja.scrollHeight;
+        opcijeCont.style.display = "none";
+    }
+    listaKorisnika.appendChild(samSaSobom);
     for (var i in Korisnik.lista) {
         if (i != selfId) {
-            var opcija = document.createElement("option");
-            opcija.value = i;
-            opcija.innerText = Korisnik.lista[i].korisnicko_ime;
-            selektSvihKorisnika.appendChild(opcija);
+            var a = document.createElement("a");
+            a.href = "#";
+            a.innerText = Korisnik.lista[i].korisnicko_ime;
+            a.onclick = function() {
+                trenutnagrupa = null;
+                trenutnirazgovor = Korisnik.lista[i].korisnicko_ime;
+                Poruka.prikaziPoruke();
+                divCaskanja.scrollTop = divCaskanja.scrollHeight;
+                opcijeCont.style.display = "none";
+            }
+            listaKorisnika.appendChild(a);
         }
     }
-    //Da bi razgovor pre apdejta ostao ukljucen
-    /*if (idtrenutnoselektovanog != -1) {
-        for (var i = 0; i < selektSvihKorisnika.options.length; i++) {
-            console.log(trenutnoselektovan + " " + selektSvihKorisnika.options[i].value);
-            if (selektSvihKorisnika.options[i].value == trenutnoselektovan) { //Lose za sada ali radi
-                console.log("Selektujem " + i);
-                selektSvihKorisnika.selectedIndex = i;
-                break;
-            }
-        }
-        //Ako ne nadje ni jedan znaci da se odjavio onaj sa kojim korisnik trenutno razgovara, sto se u ovom slucaju preskace, a treba da se omoguci kasnije
-    }*/
-
-    //divSvihKorisnika.appendChild(selektSvihKorisnika);
 }
