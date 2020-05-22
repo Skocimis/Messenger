@@ -25,7 +25,8 @@ Grupa.ucitaj = function(param) { //Ucitava grupu u odnosu na podatke iz baze
 Grupa.updatujKodClanova = function(grupa) {
     var onlajnclanovi = [];
     for (var i in grupa.socketi) {
-        onlajnclanovi.push(Korisnik.lista[grupa.socketi[i]].korisnicko_ime);
+        if (grupa.socketi[i])
+            onlajnclanovi.push(Korisnik.lista[grupa.socketi[i]].korisnicko_ime);
     }
     for (var i in grupa.socketi) {
         //console.log("stigo ovde");

@@ -59,6 +59,19 @@ socket.on("dodajUPrivatni", function(podaci) {
         if (Korisnik.lista[i].korisnicko_ime == podaci.korisnicko_ime) {
             Korisnik.lista[i].poruke.push(podaci.poruka);
             Poruka.prikaziPoruke();
+            if (Korisnik.lista[selfId].korisnicko_ime == podaci.poruka.substring(0, podaci.poruka.indexOf(":"))) { //Ako sam posiljalac
+                Korisnik.lista[i].img.style.display = "none";
+                divCaskanja.scrollTop = divCaskanja.scrollHeight;
+            } else {
+                if (Korisnik.lista[i].korisnicko_ime == trenutnirazgovor) {
+                    Korisnik.lista[i].img.style.display = "none";
+                    divCaskanja.scrollTop = divCaskanja.scrollHeight;
+                } else {
+                    //alert(Korisnik.lista[i].img.style.display);
+                    Korisnik.lista[i].img.style.display = "inline";
+                    //alert(Korisnik.lista[i].img.style.display);
+                }
+            }
             return;
         }
     }
@@ -71,6 +84,18 @@ socket.on("dodajPorukuUGrupu", function(podaci) {
             //alert("nova poruka u grupi: " + podaci.poruka);
             Grupa.lista[i].poruke.push(podaci.posiljalac + ": " + podaci.poruka);
             Poruka.prikaziPoruke();
+            if (Korisnik.lista[selfId].korisnicko_ime == podaci.posiljalac) {
+                Grupa.lista[i].img.style.display = "none";
+                divCaskanja.scrollTop = divCaskanja.scrollHeight;
+            } else {
+                if (trenutnagrupa && Grupa.lista[i].naziv == trenutnagrupa.naziv && Grupa.lista[i].vlasnik == trenutnagrupa.vlasnik) {
+                    Grupa.lista[i].img.style.display = "none";
+                    divCaskanja.scrollTop = divCaskanja.scrollHeight;
+                } else {
+                    Grupa.lista[i].img.style.display = "inline";
+                }
+            }
+
             return;
         }
     }
@@ -78,6 +103,13 @@ socket.on("dodajPorukuUGrupu", function(podaci) {
 socket.on("novaPoruka", function(podaci) {
     javneporuke.push(podaci.poruka); //Podaci bi trebali da sadrze i korisnika koji je poslao poruku ako bih hteo da dodam blokiranje
     Poruka.prikaziPoruke();
+    if (!trenutnagrupa && !trenutnirazgovor) { //Ako je cet otvoren
+        imgSvi.style.display = "none";
+        divCaskanja.scrollTop = divCaskanja.scrollHeight;
+    } else {
+        imgSvi.style.display = "inline";
+
+    }
 });
 socket.on("odgovorNaPravljenjeGrupe", function(podaci) {
     alert(podaci.poruka);

@@ -22,6 +22,7 @@ var izbaciClanaInput = document.getElementById("izbaciClanaInput");
 var opcijeCont = document.getElementById("grupa");
 var hederDiv = document.getElementById("heder");
 var teloDokumenta = document.querySelector("body");
+var shift = false;
 
 updateElements = function() {
     var w = window.innerWidth;
@@ -98,7 +99,8 @@ btnBrisiGrupu.onclick = function() {
 
 
 taPoruke.onkeydown = function(e) {
-    if (e.keyCode == 13) {
+    if (e.keyCode == 16) { shift = true; }
+    if (!shift && e.keyCode == 13) {
         if (/\S/.test(taPoruke.value)) //Ako poruka nema whitespace ne salje se
         {
             if (trenutnirazgovor) {
@@ -123,9 +125,10 @@ taPoruke.onkeydown = function(e) {
     }
 }
 taPoruke.onkeyup = function(e) {
-    if (e.keyCode == 13) {
+    if (!shift && e.keyCode == 13) {
         taPoruke.value = "";
     }
+    if (e.keyCode == 16) { shift = false; }
 }
 pretragaGrupa.onkeydown = function(e) {
     if (e.keyCode == 13) {

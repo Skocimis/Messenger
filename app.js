@@ -25,7 +25,7 @@ app.get("/", function(req, res) {
 });
 app.use("/client", express.static(__dirname + "/client"));
 
-serv.listen(80);
+serv.listen(25565);
 console.log("Server je pokrenut!");
 
 var io = require("socket.io")(serv, {});

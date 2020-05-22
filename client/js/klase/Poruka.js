@@ -34,7 +34,19 @@ Poruka.prikaziPoruke = function() {
     //u suprotnom su grupe
 }
 Poruka.dodajPoruku = function(tekst) { //Posiljalac je trenutno deo teksta poruke
-    var poruka = document.createElement("div");
-    poruka.innerText = tekst;
+    let poruka = document.createElement("div");
+    let granica = tekst.indexOf(":");
+    let posiljalac = tekst.substring(0, granica);
+    let telo = tekst.substring(granica + 1, tekst.length);
+    let elemp = document.createElement("span");
+    elemp.style.color = "#192";
+    elemp.style.fontWeight = "bold";
+    elemp.style.fontSize = "larger";
+    let elemt = document.createElement("span");
+    elemp.innerText = posiljalac;
+    elemp.innerHTML += "&nbsp;&nbsp;";
+    elemt.innerText = telo;
+    poruka.appendChild(elemp);
+    poruka.appendChild(elemt);
     divCaskanja.appendChild(poruka);
 }

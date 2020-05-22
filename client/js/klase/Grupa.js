@@ -6,6 +6,14 @@ Grupa = function(paket) {
     self.clanovi = paket.clanovi || [];
     self.aktivni = paket.aktivni || [];
     self.poruke = paket.poruke || [];
+    self.img = document.createElement("img");
+    self.img.src = "client/img/Novaporuka.png";
+    self.img.style.width = "20px";
+    self.img.style.height = "20px";
+    self.img.style.marginBottom = "4px";
+    self.img.style.marginLeft = "6px";
+    self.img.style.display = "none";
+    self.img.alt = "#";
     Grupa.lista[self.id] = self;
     return self;
 }
@@ -35,7 +43,9 @@ Grupa.prikaziSve = function() {
         Poruka.prikaziPoruke();
         divCaskanja.scrollTop = divCaskanja.scrollHeight;
         opcijeCont.style.display = "none";
+        imgSvi.style.display = "none";
     }
+    svi.appendChild(imgSvi);
     listaGrupa.appendChild(svi);
     for (var i in Grupa.lista) {
         if (Grupa.lista[i]) {
@@ -47,9 +57,11 @@ Grupa.prikaziSve = function() {
                 if (!Grupa.lista[k]) return;
                 trenutnagrupa = { naziv: Grupa.lista[k].naziv, vlasnik: Grupa.lista[k].vlasnik };
                 trenutnirazgovor = null;
+                Grupa.lista[k].img.style.display = "none";
                 Poruka.prikaziPoruke();
                 divCaskanja.scrollTop = divCaskanja.scrollHeight;
             }
+            a.appendChild(Grupa.lista[k].img);
             listaGrupa.appendChild(a);
         }
     }
@@ -71,12 +83,17 @@ Grupa.prikaziOpcije = function() {
     listaAktivnihClanova.innerHTML = "";
     listaSvihClanova.innerHTML = "";
     for (var i in tr.aktivni) {
+        //alert(i);
         var a = document.createElement("a");
         a.href = "#";
-        a.innerText = tr.aktivni[i];
+        let k = i;
+        a.innerText = tr.aktivni[k];
         a.onclick = function() {
             trenutnagrupa = null;
-            trenutnirazgovor = tr.aktivni[i];
+            trenutnirazgovor = tr.aktivni[k];
+            Korisnik.nadjiKorisnikaPoImenu(trenutnirazgovor).img.style.display = "none";
+            if (Korisnik.lista[k])
+                Korisnik.lista[k].img.style.display = "none";
             Poruka.prikaziPoruke();
             divCaskanja.scrollTop = divCaskanja.scrollHeight;
             opcijeCont.style.display = "none";
@@ -86,10 +103,12 @@ Grupa.prikaziOpcije = function() {
     for (var i in tr.clanovi) {
         var a = document.createElement("a");
         a.href = "#";
-        a.innerText = tr.clanovi[i];
+        let k = i;
+        a.innerText = tr.clanovi[k];
         a.onclick = function() {
             trenutnagrupa = null;
-            trenutnirazgovor = tr.clanovi[i];
+            trenutnirazgovor = tr.clanovi[k];
+            Korisnik.nadjiKorisnikaPoImenu(trenutnirazgovor).img.style.display = "none";
             Poruka.prikaziPoruke();
             divCaskanja.scrollTop = divCaskanja.scrollHeight;
             opcijeCont.style.display = "none";
