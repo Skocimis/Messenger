@@ -18,11 +18,19 @@
 
     <div id="prijavljivanje">
         <form id="logregforma">
-            <input type="text" id="korisnicko_ime"><br>
-            <input type="password" id="lozinka"><br>
-            <button id="prijava" type="submit">Prijava</button>
-            <button id="registracija">Registracija</button>
-            <br><label for="rezultatPrijave" id="rezPrijave"></label>
+            <div class="kolonaforme">
+                <label for="korisnickoime">Korisničko ime</label>
+                <input type="text" id="korisnicko_ime">
+            </div>
+            <div class="kolonaforme">
+                <label for="sifra">Lozinka</label>
+                <input type="password" id="lozinka">
+            </div>
+            <div class="kolonaforme">
+                <button id="prijava" type="submit">Prijava</button>
+                <button id="registracija">Registracija</button>
+            </div>
+            <label for="rezultatPrijave" id="rezPrijave"></label>
         </form>
         <p id="rezPrijave"></p>
     </div>

@@ -30,9 +30,11 @@ updateElements = function() {
     if (trenutnagrupa) {
         teloDokumenta.style.backgroundColor = "rgb(13, 41, 29)";
         document.getElementById("srednjibar").style.maxWidth = (w - 500) + "px";
+        document.getElementById("srednjibar").style.width = (w - 500) + "px";
     } else {
         teloDokumenta.style.backgroundColor = "rgb(21, 36, 85)";
         document.getElementById("srednjibar").style.maxWidth = (w - 200) + "px";
+        document.getElementById("srednjibar").style.width = (w - 200) + "px";
     }
     //console.log(h + " - " + hederDiv.offsetHeight + " - " + taPoruke.offsetHeight + " - " + hederDiv.clientTop);
     divCaskanja.style.height = (h - hederDiv.offsetHeight - taPoruke.offsetHeight) + "px";

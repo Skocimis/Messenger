@@ -10,6 +10,7 @@ const fs = require("fs");
 var app = express();
 //var serv = require("http").Server(app);
 var serv = https.createServer({ key: fs.readFileSync("server.key"), cert: fs.readFileSync("server.cert") }, app);
+console.log("Server je pokrenut!");
 
 Baza.sveGrupe(function(err, res) { //Ucitaj sve postojece grupe u memoriju
     if (err || !res) process.exit(1);
@@ -22,7 +23,7 @@ Baza.sveGrupe(function(err, res) { //Ucitaj sve postojece grupe u memoriju
             if (Grupa.lista[i])
         }*/
 });
-
+console.log("Baza je ucitana!");
 app.get("/", function(req, res) {
     res.sendFile(__dirname + "/client/index.html");
 });
@@ -31,7 +32,6 @@ app.use("/client", express.static(__dirname + "/client"));
 
 
 serv.listen(25565);
-console.log("Server je pokrenut!");
 
 var io = require("socket.io")(serv, {});
 
@@ -63,19 +63,15 @@ io.sockets.on("connection", function(socket) {
     SOCKET_LIST[socket.id] = socket;
 
     socket.on("registracija", function(podaci) {
-        console.log("Pristigli: " + podaci.korisnicko_ime + ":" + podaci.lozinka);
         Baza.iskoriscenoIme(podaci, function(rezultat) {
             if (rezultat) {
-                console.log("iskorisceno");
                 return socket.emit("odgovorNaRegistraciju", { poruka: "Već iskorišćeno korisničko ime. " });
             }
             Baza.dodajKorisnika(podaci, function(vr) {
                 if (vr) {
                     socket.emit("odgovorNaRegistraciju", { poruka: "Uspešna registracija! " });
-                    console.log("uspeh");
                 } else {
                     socket.emit("odgovorNaRegistraciju", { poruka: "Neuspešna registracija! " });
-                    console.log("neuspeh");
                 }
             });
         });
@@ -93,4 +89,4 @@ io.sockets.on("connection", function(socket) {
     });
 
 });
-console.log("Server je ucitan");
+console.log("Server je ucitan!");
