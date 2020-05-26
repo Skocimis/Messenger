@@ -4,7 +4,7 @@ socket.on("odgovorNaRegistraciju", function(rezultat) {
     document.getElementById("rezPrijave").innerText = rezultat.poruka;
 });
 socket.on("odgovorNaPrijavu", function(rezultat) {
-    if (!rezultat.uspeh) return alert("Netacni podaci. ");
+    if (!rezultat.uspeh) return document.getElementById("rezPrijave").innerText = rezultat.poruka;
     formaPrijava.style.display = "none";
     container.style.display = "block";
     updateElements();

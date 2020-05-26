@@ -5,8 +5,11 @@ require("./server/Grupa");
 //cd '..\..\..\..\Programi\MongoDB\Server\4.2\bin\'
 
 var express = require("express");
+const https = require("https");
+const fs = require("fs");
 var app = express();
-var serv = require("http").Server(app);
+//var serv = require("http").Server(app);
+var serv = https.createServer({ key: fs.readFileSync("server.key"), cert: fs.readFileSync("server.cert") }, app);
 
 Baza.sveGrupe(function(err, res) { //Ucitaj sve postojece grupe u memoriju
     if (err || !res) process.exit(1);
@@ -24,6 +27,8 @@ app.get("/", function(req, res) {
     res.sendFile(__dirname + "/client/index.html");
 });
 app.use("/client", express.static(__dirname + "/client"));
+
+
 
 serv.listen(25565);
 console.log("Server je pokrenut!");
@@ -58,16 +63,26 @@ io.sockets.on("connection", function(socket) {
     SOCKET_LIST[socket.id] = socket;
 
     socket.on("registracija", function(podaci) {
+        console.log("Pristigli: " + podaci.korisnicko_ime + ":" + podaci.lozinka);
         Baza.iskoriscenoIme(podaci, function(rezultat) {
-            if (rezultat) return socket.emit("odgovorNaRegistraciju", { poruka: "Već iskorišćeno korisničko ime. " });
-            Baza.dodajKorisnika(podaci, function() {
-                socket.emit("odgovorNaRegistraciju", { poruka: "Uspešna registracija! " });
+            if (rezultat) {
+                console.log("iskorisceno");
+                return socket.emit("odgovorNaRegistraciju", { poruka: "Već iskorišćeno korisničko ime. " });
+            }
+            Baza.dodajKorisnika(podaci, function(vr) {
+                if (vr) {
+                    socket.emit("odgovorNaRegistraciju", { poruka: "Uspešna registracija! " });
+                    console.log("uspeh");
+                } else {
+                    socket.emit("odgovorNaRegistraciju", { poruka: "Neuspešna registracija! " });
+                    console.log("neuspeh");
+                }
             });
         });
     });
     socket.on("prijava", function(podaci) {
         Baza.dobraLozinka(podaci, function(rezultat) {
-            if (!rezultat) return socket.emit("odgovorNaPrijavu", { uspeh: false });
+            if (!rezultat) return socket.emit("odgovorNaPrijavu", { poruka: "Netacni podaci" });
             Korisnik.priPovezivanju(socket, podaci.korisnicko_ime);
             socket.emit("odgovorNaPrijavu", { uspeh: true });
         });

@@ -1,3 +1,6 @@
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+
 var mongojs = require('mongojs');
 var db = mongojs('localhost:27017/messenger', ['korisnici']);
 Baza = {};
@@ -8,15 +11,20 @@ Baza.iskoriscenoIme = function(podaci, cb) {
     });
 }
 Baza.dodajKorisnika = function(podaci, cb) {
-    db.korisnici.insert({ korisnicko_ime: podaci.korisnicko_ime, lozinka: podaci.lozinka }, function() {
-        cb();
-    })
+    bcrypt.hash(podaci.lozinka, saltRounds, function(err, hash) {
+        db.korisnici.insert({ korisnicko_ime: podaci.korisnicko_ime, lozinka: hash }, function(err, res) {
+            cb(!err);
+        })
+    });
+
+
 }
 Baza.dobraLozinka = function(podaci, cb) {
-    db.korisnici.findOne({ korisnicko_ime: podaci.korisnicko_ime, lozinka: podaci.lozinka }, function(err, res) {
-        if (res)
-            cb(true);
-        else cb(false);
+    db.korisnici.findOne({ korisnicko_ime: podaci.korisnicko_ime }, function(err, res) {
+        if (err || !res) return cb(false);
+        bcrypt.compare(podaci.lozinka, res.lozinka, function(err, result) {
+            cb(result);
+        });
     });
 }
 
