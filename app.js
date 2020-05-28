@@ -2,11 +2,11 @@ require("./server/Baza");
 require("./server/Korisnik");
 require("./server/Grupa");
 
-var express = require("express");
+const express = require("express");
 const https = require("https");
 const fs = require("fs");
-var app = express();
-var serv = https.createServer({ key: fs.readFileSync("server.key"), cert: fs.readFileSync("server.cert") }, app);
+const app = express();
+const serv = https.createServer({ key: fs.readFileSync("server.key"), cert: fs.readFileSync("server.cert") }, app);
 console.log("Server je pokrenut!");
 
 Baza.sveGrupe(function(err, res) {

@@ -51,7 +51,7 @@ Korisnik.priPovezivanju = function(socket, korisnicko_ime) {
             }
         }
         if (primalac === null) {
-            console.log("primalac je null");
+            //console.log("primalac je null");
             //Slanje poruke na server, zato sto se korisnik u medjuvremenu odjvaio, mogao bih i da dodam slanje poruka oflajn ljudima
         } else {
             primalac.emit("dodajUPrivatni", { korisnicko_ime: korisnik.korisnicko_ime, poruka: korisnik.korisnicko_ime + ": " + podaci.poruka });
@@ -70,7 +70,7 @@ Korisnik.priPovezivanju = function(socket, korisnicko_ime) {
             }
         }
         if (!trazenagrupa) {
-            console.log("Salje u nepostojecu grupu. ");
+            //console.log("Salje u nepostojecu grupu. ");
             return;
         }
         if (trazenagrupa.clanovi.includes(korisnik.korisnicko_ime)) { //Bilo bi brze da ide kroz sokete, ali za svaki slucaj
@@ -87,7 +87,7 @@ Korisnik.priPovezivanju = function(socket, korisnicko_ime) {
 
             }
         }*/
-        console.log("Nije clan grupe");
+        //console.log("Nije clan grupe");
     });
 
     socket.on("napraviGrupu", function(podaci) {
@@ -165,13 +165,13 @@ Korisnik.priPovezivanju = function(socket, korisnicko_ime) {
                         if (Grupa.lista[i].clanovi.indexOf(podaci.korisnicko_ime) != -1) {
                             if (korisnik.korisnicko_ime == podaci.vlasnik || korisnik.korisnicko_ime == podaci.korisnicko_ime) {
                                 Grupa.lista[i].clanovi.splice(Grupa.lista[i].clanovi.indexOf(podaci.korisnicko_ime), 1);
-                                console.log(Grupa.lista[i].clanovi);
+                                //console.log(Grupa.lista[i].clanovi);
                                 Baza.updatujGrupu({ vlasnik: podaci.vlasnik, naziv: podaci.naziv, clanovi: Grupa.lista[i].clanovi }, function() {
                                     socket.emit("odgovorNaUklanjanjeClana", { poruka: "Uspesno uklanjanje clana" });
                                     for (var j in Korisnik.lista) {
                                         if (Korisnik.lista[j].korisnicko_ime == podaci.korisnicko_ime) {
                                             Korisnik.lista[j].socket.emit("obrisanaGrupa", { vlasnik: podaci.vlasnik, naziv: podaci.naziv });
-                                            console.log("Emitovano " + Korisnik.lista[j].korisnicko_ime + "-u");
+                                            //console.log("Emitovano " + Korisnik.lista[j].korisnicko_ime + "-u");
                                             Grupa.lista[i].socketi.splice(Grupa.lista[i].socketi.indexOf(j), 1);
                                         }
                                     }
