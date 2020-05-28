@@ -2,45 +2,36 @@ require("./server/Baza");
 require("./server/Korisnik");
 require("./server/Grupa");
 
-//cd '..\..\..\..\Programi\MongoDB\Server\4.2\bin\'
-
 var express = require("express");
 const https = require("https");
 const fs = require("fs");
 var app = express();
-//var serv = require("http").Server(app);
 var serv = https.createServer({ key: fs.readFileSync("server.key"), cert: fs.readFileSync("server.cert") }, app);
 console.log("Server je pokrenut!");
 
-Baza.sveGrupe(function(err, res) { //Ucitaj sve postojece grupe u memoriju
+Baza.sveGrupe(function(err, res) {
     if (err || !res) process.exit(1);
     for (var i = 0; i < res.length; i++) {
         Grupa.ucitaj(res[i]);
     }
-    /*
-        delete Grupa.lista[0];
-        for (var i = 0; i < Grupa.lista.length; i++) {
-            if (Grupa.lista[i])
-        }*/
 });
 console.log("Baza je ucitana!");
+
 app.get("/", function(req, res) {
     res.sendFile(__dirname + "/client/index.html");
 });
 app.use("/client", express.static(__dirname + "/client"));
 
-
-
-serv.listen(25565);
+serv.listen(443);
 
 var io = require("socket.io")(serv, {});
 
+SOCKET_LIST = {};
 broadcastuj = function(naziv, podaci) {
     for (var i in SOCKET_LIST) {
         SOCKET_LIST[i].emit(naziv, podaci);
     }
 }
-SOCKET_LIST = {};
 
 //Nova grupa, onaj ko hoce da napravi grupu salje samo naziv i inicijalna grupa se pravi na serveru
 //Prvo da se doda vlasnik u clanove
@@ -90,3 +81,5 @@ io.sockets.on("connection", function(socket) {
 
 });
 console.log("Server je ucitan!");
+
+//cd '..\..\..\..\Programi\MongoDB\Server\4.2\bin\'
