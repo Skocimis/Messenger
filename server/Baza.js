@@ -1,8 +1,8 @@
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
-var mongojs = require('mongojs');
-var db = mongojs('localhost:27017/messenger', ['korisnici']);
+const mongojs = require('mongojs');
+const db = mongojs('localhost:27017/messenger', ['korisnici']);
 Baza = {};
 Baza.iskoriscenoIme = function(podaci, cb) {
     db.korisnici.findOne({ korisnicko_ime: podaci.korisnicko_ime }, function(err, res) {

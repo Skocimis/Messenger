@@ -7,6 +7,8 @@ const https = require("https");
 const fs = require("fs");
 const app = express();
 const serv = https.createServer({ key: fs.readFileSync("server.key"), cert: fs.readFileSync("server.cert") }, app);
+const io = require("socket.io")(serv, {});
+
 console.log("Server je pokrenut!");
 
 Baza.sveGrupe(function(err, res) {
@@ -24,30 +26,12 @@ app.use("/client", express.static(__dirname + "/client"));
 
 serv.listen(443);
 
-var io = require("socket.io")(serv, {});
-
 SOCKET_LIST = {};
 broadcastuj = function(naziv, podaci) {
     for (var i in SOCKET_LIST) {
         SOCKET_LIST[i].emit(naziv, podaci);
     }
 }
-
-//Nova grupa, onaj ko hoce da napravi grupu salje samo naziv i inicijalna grupa se pravi na serveru
-//Prvo da se doda vlasnik u clanove
-/*var pdc = { vlasnik: "joca", naziv: "rganb", clanovi: ["joca"] };
-Baza.postojiGrupa(pdc, function(rezultat) {
-    if (rezultat) console.log("Grupa postoji");
-    else {
-        Baza.updatujGrupu(pdc, function() {
-            Grupa.ucitaj(pdc);
-            console.log("Napravljena grupa");
-        });
-    }
-});*/
-
-//
-
 
 io.sockets.on("connection", function(socket) {
     socket.id = Math.random();
