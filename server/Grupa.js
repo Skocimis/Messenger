@@ -1,27 +1,22 @@
-Grupa = function(param) { //param sadrzi naziv grupe, socketid vlasnika i socketidjeve svih clanova grupe
-    self = {};
+Grupa = function(param) {
+    self = {}; //Alokacija memorije za novi objekat 
+    //Definicija "atributa" novog objekta
     self.id = Grupa.lista.length;
-    self.vlasnik = param.vlasnik; //String
+    self.vlasnik = param.vlasnik;
     self.naziv = param.naziv;
-    self.clanovi = param.clanovi; //Svi clanovi grupe
-    self.socketi = param.socketi || []; //Socketi aktivnih clanova, ovo treba da dodam da se apdejtuje kad se korisnici loguju u izloguju
-    /*self.updatujKodClanova = function() { //Novi clan, removovan clan, ulogovao se clan, izlogovao se clan, salje obavestenje svim aktivnim clanovima
-        //console.log(self.naziv);
-        
-    }
-    self.prikaziIme = function() {
-        console.log(self.naziv);
-    }*/
-
-    //broadcastuj("napravljenaGrupa", { id: self.id, korisnicko_ime: self.korisnicko_ime });
-    Grupa.lista.push(self);
-    //return self;
+    self.clanovi = param.clanovi;
+    //U redu dole, ako parametar ne sadrzi sockete, socketi ce biti prazan niz
+    self.socketi = param.socketi || [];
+    Grupa.lista.push(self); //Ubacivanje grupe u listu svih grupa (niz)
+    return self; //Vracanje novog objekta, tacnije pokazivaca na njega
 }
-Grupa.lista = [];
+Grupa.lista = []; //Lista grupa je u stvari niz koji sadrzi sve grupe
 Grupa.ucitaj = function(param) { //Ucitava grupu u odnosu na podatke iz baze
-    /*var grupa = */
-    Grupa(param);
+    var grupa = Grupa(param); //Samo se poziva konstruktor grupe
+    //Kada bih hteo da uradim nesto sa tom grupom sto nije u konstruktoru,
+    //to bi moglo da bude ovde
 }
+
 Grupa.updatujKodClanova = function(grupa) {
     var onlajnclanovi = [];
     for (var i in grupa.socketi) {

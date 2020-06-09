@@ -101,31 +101,32 @@ btnBrisiGrupu.onclick = function() {
 
 
 taPoruke.onkeydown = function(e) {
-    if (e.keyCode == 16) { shift = true; }
-    if (!shift && e.keyCode == 13) {
-        if (/\S/.test(taPoruke.value)) //Ako poruka nema whitespace ne salje se
+    if (e.keyCode == 16) { shift = true; } //za funkcionalnost Shift+Enter
+    if (!shift && e.keyCode == 13) { //Ako je kliknut enter bez shifta
+        if (/\S/.test(taPoruke.value)) //Ako je poruka samo whitespace ne salje se
         {
-            if (trenutnirazgovor) {
+            if (trenutnirazgovor) { //Ako je trenutni razgovor sa korisnikom
                 socket.emit("posaljiDmKorisniku", {
                     korisnicko_ime: trenutnirazgovor,
                     poruka: taPoruke.value
                 });
-            } else if (trenutnagrupa) {
+            } else if (trenutnagrupa) { //Ako je trenutni razgovor sa grupom
                 socket.emit("posaljiPorukuUGrupu", {
                     vlasnik: trenutnagrupa.vlasnik,
                     naziv: trenutnagrupa.naziv,
                     poruka: taPoruke.value
                 });
-            } else //svi
+            } else //ako je trenutni razgovor sa grupom #SVI
             {
                 socket.emit("posaljiPorukuSvima", {
                     poruka: taPoruke.value
                 });
             }
         }
-        taPoruke.value = "";
+        taPoruke.value = ""; //Brisanje polja za unos teksta
     }
 }
+
 taPoruke.onkeyup = function(e) {
     if (!shift && e.keyCode == 13) {
         taPoruke.value = "";

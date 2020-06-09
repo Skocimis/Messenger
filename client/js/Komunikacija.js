@@ -100,17 +100,20 @@ socket.on("dodajPorukuUGrupu", function(podaci) {
         }
     }
 });
-socket.on("novaPoruka", function(podaci) {
-    javneporuke.push(podaci.poruka); //Podaci bi trebali da sadrze i korisnika koji je poslao poruku ako bih hteo da dodam blokiranje
-    Poruka.prikaziPoruke();
-    if (!trenutnagrupa && !trenutnirazgovor) { //Ako je cet otvoren
-        imgSvi.style.display = "none";
-        divCaskanja.scrollTop = divCaskanja.scrollHeight;
+socket.on("novaPoruka", function(podaci) { //Nova poruka u grupi #SVI
+    javneporuke.push(podaci.poruka); //javneporuke je niz svih poruka iz grupe #SVI
+    Poruka.prikaziPoruke(); //Dodavanje poruke u div svih poruka 
+    //(Svaka poruka je posebni div html element)
+    if (!trenutnagrupa && !trenutnirazgovor) { //Ako je cet #SVI otvoren
+        imgSvi.style.display = "none"; //Crvena tackica se ne vidi
+        divCaskanja.scrollTop = divCaskanja.scrollHeight; //Skroluje se dole do nove poruke
     } else {
-        imgSvi.style.display = "inline";
+        imgSvi.style.display = "inline"; //Crvena tackica se vidi
 
     }
 });
+
+
 socket.on("odgovorNaPravljenjeGrupe", function(podaci) {
     alert(podaci.poruka);
 });
